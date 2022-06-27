@@ -1,0 +1,55 @@
+const Article = require("../models/articleSchema");   //Model database
+
+const article_index_get =  (req, res) => {
+    // Select All Data From DataBase
+
+    Article.find()
+    .then(result => {
+        console.log(result);
+        res.render('index', {mytitle:"HOME" , arrArticle:result })
+    })
+    .catch(err =>{
+        console.log(err);
+    })
+}
+
+const article_post =  (req, res) => {
+
+    const article = new Article(req.body);
+
+    article.save() 
+        .then(result => {
+            res.redirect("/all-articles");
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+const article_details_get = (req, res) => {
+
+    Article.findById(req.params.id)
+    .then(result => {
+        res.render('details',{mytitle:"ARTICLE Details", objArticle:result})
+    })
+    .catch(err =>{
+        console.log(err);
+
+    })
+
+}
+
+const article_delete =  (req, res) => {
+    Article.findByIdAndDelete(req.params.id)
+      .then((params) => {res.json( {mylink: "/all-articles"} );})
+      .catch((err) => {
+        console.log(err);
+      });
+}
+
+module.exports = {
+    article_index_get,
+    article_post,
+    article_details_get,
+    article_delete,
+};
